@@ -78,6 +78,28 @@ class UcController extends Controller
         return false;
     }
 
+     /**
+     * 获取ip
+     * @return mixed
+     */
+    function getip() {
+        static $ip = '';
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if(isset($_SERVER['HTTP_CDN_SRC_IP'])) {
+            $ip = $_SERVER['HTTP_CDN_SRC_IP'];
+        } elseif (isset($_SERVER['HTTP_CLIENT_IP']) && preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR']) AND preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
+            foreach ($matches[0] AS $xip) {
+                if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
+                    $ip = $xip;
+                    break;
+                }
+            }
+        }
+        return $ip;
+    }
+    
     /**
      * 用户注册
      * @param string $username 用户名
@@ -97,7 +119,7 @@ class UcController extends Controller
      */
     public function uc_register($username, $password, $email, $question_id = '', $answer = '', $reg_ip = '')
     {
-        $ip = !empty($reg_ip) ? $reg_ip : get_client_ip();
+        $ip = !empty($reg_ip) ? $reg_ip : $this->getip();
         return $this->uc->uc_user_register($username, $password, $email, $question_id, $answer, $ip);
     }
 
