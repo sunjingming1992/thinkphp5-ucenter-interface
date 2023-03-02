@@ -73,9 +73,9 @@ class ApiController extends Controller
         $code = input('code', '');
         parse_str(_uc_authcode($code, 'DECODE', UC_KEY), $get);
 
-        if (get_magic_quotes_gpc()) {
-            $get = _uc_stripslashes($get);
-        }
+//         if (get_magic_quotes_gpc()) {
+//             $get = _uc_stripslashes($get);
+//         }
 
         if (empty($get)) {
             exit('非法请求');
