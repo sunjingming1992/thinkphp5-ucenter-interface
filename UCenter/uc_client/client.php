@@ -112,7 +112,12 @@ function uc_api_post($module, $action, $arg = array()) {
 		$sep = '&';
 	}
 	$postdata = uc_api_requestdata($module, $action, $s);
-	return uc_fopen2(UC_API.'/index.php', 500000, $postdata, '', TRUE, UC_IP, 20);
+	$arrNoOut = ['synlogin'];
+	$dataout = false;
+	if(in_array($action, $arrNoOut)) {
+        $dataout = true;
+    }
+	return uc_fopen2(UC_API.'/index.php', 500000, $postdata, '', TRUE, UC_IP, 20, TRUE, $dataout);
 }
 
 function uc_api_requestdata($module, $action, $arg='', $extra='') {
@@ -213,16 +218,16 @@ function uc_authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
 	}
 }
 
-function uc_fopen2($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE, $ip = '', $timeout = 15, $block = TRUE) {
+function uc_fopen2($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE, $ip = '', $timeout = 15, $block = TRUE, $dataout = false) {
 	$__times__ = isset($_GET['__times__']) ? intval($_GET['__times__']) + 1 : 1;
 	if($__times__ > 2) {
 		return '';
 	}
 	$url .= (strpos($url, '?') === FALSE ? '?' : '&')."__times__=$__times__";
-	return uc_fopen($url, $limit, $post, $cookie, $bysocket, $ip, $timeout, $block);
+	return uc_fopen($url, $limit, $post, $cookie, $bysocket, $ip, $timeout, $block, $dataout);
 }
 
-function uc_fopen($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE, $ip = '', $timeout = 15, $block = TRUE) {
+function uc_fopen($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE, $ip = '', $timeout = 15, $block = TRUE, $dataout = false) {
 	$return = '';
 	$matches = parse_url($url);
 	!isset($matches['host']) && $matches['host'] = '';
@@ -236,7 +241,7 @@ function uc_fopen($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE,
 	$url = 'http://' . ($ip ? $ip : $host) . $path;
 	$opt = [
 		CURLOPT_URL => $url,
-		CURLOPT_RETURNTRANSFER => false,
+		CURLOPT_RETURNTRANSFER => $dataout,
 		CURLOPT_HEADER => false,
 		CURLOPT_USERAGENT => $_SERVER[HTTP_USER_AGENT],
 		CURLOPT_HTTPHEADER => [
