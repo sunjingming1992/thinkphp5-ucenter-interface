@@ -18,7 +18,7 @@ UCenter后台配置:
 10.进入编辑，把UCenter后台生成的配置文件拷贝到UCenter模块的Conf目录中的config.php文件中保存即可
 11.再次保存后，返回应用列表会变成绿色的[通信成功]字样
 12.如果ucenter未接收到应用列表同步，可以进入应用->编辑->保存，即可收到ucenter的同步数据
-13.tp5项目路由如此配置(因为ucenter的测试链接自动加上了api所以需要这样写)
+13.tp5项目路由如此配置、稍加修改可支持tp6(因为ucenter的测试链接自动加上了api所以需要这样写)
 Route::get('api/uc', 'uc/UCenter/uc');
 
 ## 感谢
