@@ -2,7 +2,7 @@
 namespace UCenter\Controller;
 
 use think\Controller;
-use think\Log;
+use think\facade\Log;
 use think\Loader;
 define('UC_CLIENT_PATH', dirname(__DIR__) . '/uc_client');
 require_once(dirname(__DIR__) . '/function.php');
